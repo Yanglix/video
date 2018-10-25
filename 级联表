@@ -1,0 +1,37 @@
+    api.get_area({}).then(({meta, data}) => {
+      const dataProvince =
+        data.filter(item => item.pid === 0)
+            .map(item => ({...item, city: []}))
+
+      const dataCity = []
+      const dataArea = []
+      data.filter(item => item.pid !== 0)
+          .forEach(function (item) {
+            const provinceMatched = dataProvince.find(function (province) {
+              return province.area_id === item.pid
+            })
+            if (provinceMatched) {
+              dataCity.push({...item, area: []})
+              // provinceMatched.item.push({...item,area:[]})
+            } else {
+              dataArea.push(item)
+            }
+
+          })
+
+      dataArea.forEach(function (area) {
+        dataCity.find(function (city) {
+          return area.pid === city.area_id
+        }).area.push(area)
+      })
+
+
+      dataCity.forEach(function (city) {
+        dataProvince.find(function (province) {
+          return city.pid === province.area_id
+        }).city.push(city)
+      })
+
+
+      console.log(dataProvince, '问卷请求数据')
+    })
